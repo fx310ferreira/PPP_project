@@ -1,12 +1,4 @@
 # ninja log v5
-1	236	6744298251328822	CMakeFiles/projeto.dir/structs.c.obj	4f573eda453ca798
-13	237	6744298251328822	CMakeFiles/projeto.dir/main.c.obj	42606c401aa0cd11
-238	657	6744298255397060	projeto.exe	d044f912c7fb3b72
-12	90	6744300719305810	CMakeFiles/projeto.dir/main.c.obj	42606c401aa0cd11
-1	92	6744300719325805	CMakeFiles/projeto.dir/structs.c.obj	4f573eda453ca798
-92	195	6744300720320709	projeto.exe	d044f912c7fb3b72
-1	82	6744301159575734	CMakeFiles/projeto.dir/main.c.obj	42606c401aa0cd11
-83	182	6744301160555588	projeto.exe	d044f912c7fb3b72
-12	85	6744308286190241	CMakeFiles/projeto.dir/main.c.obj	42606c401aa0cd11
 2	88	6744308286250242	CMakeFiles/projeto.dir/structs.c.obj	4f573eda453ca798
+12	85	6744308286190241	CMakeFiles/projeto.dir/main.c.obj	42606c401aa0cd11
 88	182	6744308287139023	projeto.exe	d044f912c7fb3b72
