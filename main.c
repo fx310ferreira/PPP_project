@@ -6,4 +6,3 @@ int main() {
     printf("\n%d/%d/%d", teste.dia, teste.mes, teste.ano);
     return 0;
 }
-
