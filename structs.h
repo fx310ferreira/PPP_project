@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct{
+typedef struct{ //estrutura que guarda datas
     int dia;
     int mes;
     int ano;
