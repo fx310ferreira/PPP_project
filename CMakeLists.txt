@@ -4,3 +4,4 @@ project(projeto C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(projeto main.c structs.c structs.h)
+add_compile_options(-Wall -Wextra)
