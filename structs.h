@@ -26,7 +26,9 @@ typedef struct noDespesa{
     struct noDespesa* proximo;
 }noDespesa ;
 
-typedef struct noDespesa* pLista_de_despesas;
+typedef struct noDespesa* pDespesas;
+
+
 
 typedef struct aluno{
     int num;
@@ -35,10 +37,11 @@ typedef struct aluno{
     data nascimento;
     int ano;
     char turma;
+    pDespesas lista_De_Despesas;
 }aluno;
 
 typedef struct no_filaAluno{
-    aluno valor;
+    aluno ficha_aluno;
     struct no_filaAluno * prox;
 } no_filaAluno;
 
@@ -46,12 +49,30 @@ typedef struct filaAluno{
     no_filaAluno * inicio;
 }filaAluno;
 
+
+/* Funções sobre datas */
+
 int verifica_mes_30d(data* pData);
 
 int verifica_se_a_data_e_valida(data* pData, int ano_atual);
 
 int valida_caracters(char* string_introduzida);
 
-void insere_data(data* pData);
+int insere_data(data* pData);
+
+int compra_datas(data* chave, data* data1);
+
+
+/* Funções sobre despesas */
+
+int inicializa_lista_de_depesas(pDespesas* plista);
+
+int verifica_se_a_lista_de_despesas_estaVazia(pDespesas lista);
+
+int cria_despesa(pDespesas* pldespesa);
+
+void inser_despesa(pDespesas lista_De_Despesas);
+
+void mostra_tabela(pDespesas teste);
 
 #endif //PROJETO_STRUCTS_H
