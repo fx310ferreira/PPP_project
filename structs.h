@@ -4,7 +4,7 @@
 
 #ifndef PROJETO_STRUCTS_H
 #define PROJETO_STRUCTS_H
-#define TAM 200
+#define TAM 200 // defenir o tamnho dos parametros usados na funcao valida para auxiliar as
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -28,8 +28,6 @@ typedef struct noDespesa{
 
 typedef struct noDespesa* pDespesas;
 
-
-
 typedef struct ficha_aluno{
     int numero;
     char nome[TAM];
@@ -52,19 +50,19 @@ typedef struct noAluno* pAlunos;
 //    no_filaAluno * inicio;
 //}filaAluno;
 
+
 /* Funcao para "processar" inputs */
 
 int filtrar(int parametro_de_comaparacao, char* bufer, int tamanho_maximo);
 
 int valida_inputs(char* msg_a_pedir_valor, char* msg_de_erro, int size_of_string, char* string, int parametro_de_comparacao);
 
+
 /* Funções sobre datas */
 
 int verifica_mes_30d(data* pData);
 
 int verifica_se_a_data_e_valida(data* pData, int ano_atual);
-
-int valida_caracters(char* string_introduzida);
 
 int compra_datas(data* chave, data* data1);
 
@@ -75,11 +73,14 @@ int inicializa_lista_de_depesas(pDespesas* plista);
 
 int verifica_se_a_lista_de_despesas_estaVazia(pDespesas lista);
 
+pDespesas destroi_lista_de_despesas(pDespesas lista);
+
+void procura_lugar_para_despesa(pDespesas lista, data* pData, pDespesas* anterior, pDespesas* atual);
+
 int cria_despesa(pDespesas* pldespesa);
 
 void inser_despesa(pDespesas lista_De_Despesas);
 
-void mostra_tabela(pDespesas teste);
 
 /* Funções sobre alunos */
 
@@ -96,5 +97,7 @@ pAlunos destroi_lista_de_alunos(pAlunos lista);
 void destroi_tabela(pAlunos* tabela);
 
 int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno);
+
+
 
 #endif //PROJETO_STRUCTS_H

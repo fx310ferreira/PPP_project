@@ -21,10 +21,12 @@ int main() {
 
     cria_ficha_para_novo_aluno(tabela, &tabela[0]->proximo);
 
+    cria_ficha_para_novo_aluno(tabela, &tabela[0]->proximo->proximo);
     for (int i = 0; i < 26; ++i) {
         if(tabela[i]->proximo==NULL)
             printf("%d ", i);
     }
+    destroi_tabela(tabela);
 
     return 0;
 }
