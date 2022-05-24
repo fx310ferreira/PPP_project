@@ -6,11 +6,22 @@
 
 int filtrar(int parametro_de_comaparacao, char* bufer, int tamanho_maximo){
     switch (parametro_de_comaparacao) {
-        case 0: //forca ao tamanho maximo da string
-            if(strlen(bufer)==tamanho_maximo)
-                return 1;
-            else
+        case 0: // valida floats
+            if(strlen(bufer)==0)
                 return 0;
+            int controlo=0;
+            for (int i = 0; i < strlen(bufer); ++i) {
+                if(bufer[i]=='.'){
+                    if(i==0 || i==strlen(bufer)-1)
+                        return 0;
+                    controlo++;
+                    if(controlo>=2)
+                        return 0;
+                } else if(bufer[i]<'0' || bufer[i]>'9')
+                    return 0;
+            }
+            return 1;
+
         case 1: //valida datas
             if(strlen(bufer)!=10)
                 return 0;
@@ -31,14 +42,27 @@ int filtrar(int parametro_de_comaparacao, char* bufer, int tamanho_maximo){
                 return 1;
             else
                 return 0;
-        case 2:  // implica a string introduzida a ser uma cadeia de digitos
+
+        case 2:  // valida ano escolar 10-12
             if(strlen(bufer)==0)
                 return 0;
             for (int i = 0; i < strlen(bufer); ++i) {
                 if(bufer[i]<'0' || bufer[i]>'9')
                     return 0;
             }
+            int numero;
+            sscanf(bufer, "%d", &numero);
+            if(numero<10 || numero>12)
+                return 0;
             return 1;
+
+        case 3: // valida turma A-Z
+            if(strlen(bufer)!=1)
+                return 0;
+            if(bufer[0]<'A' || bufer[0]>'Z')
+                return 0;
+            return 1;
+
         default:
             return 1;
     }
@@ -83,6 +107,7 @@ int verifica_mes_30d(data* pData){
     }
     return var_de_controlo;
 }
+
 int verifica_se_a_data_e_valida(data* pData, int ano_atual){
     if(pData->ano<ano_atual || pData->mes>12 || pData->mes<1 || pData->dia<1 || pData->dia>31)
         return 0;
@@ -196,8 +221,8 @@ int cria_despesa(pDespesas* pldespesa){
     char valor_da_despesa[7]; //0-999999 euros
     char msg_a_pedir_valor_da_despesa[]="Introduza o valor da despesa(0-999999 euros): ";
     char msg_valor_nValido[]="O valor introduzido nao e valido.";
-    valida_inputs(msg_a_pedir_valor_da_despesa, msg_valor_nValido, 7, valor_da_despesa, 2);
-    sscanf(valor_da_despesa, "%d", &temp->ficha_despesa.valor);
+    valida_inputs(msg_a_pedir_valor_da_despesa, msg_valor_nValido, 7, valor_da_despesa, 0);
+    sscanf(valor_da_despesa, "%f", &temp->ficha_despesa.valor);
 
     *pldespesa=temp;
     return 0;
@@ -209,4 +234,123 @@ void inser_despesa(pDespesas lista_De_Despesas){
     procura_lugar_para_despesa(lista_De_Despesas,&nova_despesa->ficha_despesa.Data, &antrior, &atual);
     nova_despesa->proximo=antrior->proximo;
     antrior->proximo=nova_despesa;
+}
+
+
+/* Funções sobre alunos */
+
+int inicializa_lista_de_alunos(pAlunos* lista_de_alunos){
+    pAlunos temp=(pAlunos) malloc(sizeof(noAluno));
+    if(temp==NULL){ return 1; }
+    temp->proximo=NULL;
+    *lista_de_alunos = temp;
+    return 0;
+}
+
+int criar_tabela(pAlunos** tabela){
+    *tabela= (pAlunos*) malloc(sizeof(pAlunos)*26);
+    if(*tabela==NULL){ return 1; }
+    for (int i = 0; i < 26; ++i) {
+        if(inicializa_lista_de_alunos(*tabela+i)==1)
+            return 1;
+
+    }
+    return 0;
+}
+
+int verifica_lista_de_alunoVazia(pAlunos lista_de_aluno){
+    if(lista_de_aluno->proximo==NULL)
+        return 1;
+    return 0;
+}
+
+pAlunos destroi_lista_de_alunos(pAlunos lista){
+    pAlunos temp;
+    while (!verifica_lista_de_alunoVazia(lista)){
+        temp=lista;
+        lista=lista->proximo;
+        free(temp);
+    }
+    free(lista);
+    return NULL;
+}
+
+void destroi_tabela(pAlunos* tabela){
+    for (int i = 26; i < 0; --i) {
+        tabela[i]= destroi_lista_de_alunos(tabela[i]);
+        free(tabela+i);
+    }
+}
+
+int index_da_tabela(char* string){
+    char t=string[0];
+
+    if( t <= 'z' && t >= 'a')
+        return t-'a';
+    else
+        return t-'A';
+}
+
+pAlunos procura_aluno_na_tabela_peloNumero(int numero, pAlunos* tabela){
+    pAlunos temp;
+    for (int i = 0; i < 26; ++i) {
+        temp = tabela[i];
+        while (temp->proximo!=NULL){
+            if(temp->proximo->ficha_aluno.numero==numero)
+                return temp;
+        }
+    }
+    return NULL;
+}
+
+int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
+    pAlunos temp = (pAlunos) malloc(sizeof(noAluno));
+    if(temp==NULL){ return 1; }
+
+    char numero_de_estudante[8];
+    char msg_a_pedir_numero_de_estudante[]="Introduza o numero de estudadente do aluno:";
+    char msg_erro_numeroDeEstudante[]="O numero introduzido e invalido.";
+    int controlo=0;
+    while(controlo==0){
+        valida_inputs(msg_a_pedir_numero_de_estudante, msg_erro_numeroDeEstudante, 8, numero_de_estudante, 9);
+        sscanf(numero_de_estudante, "%d", &temp->ficha_aluno.numero);
+        if(procura_aluno_na_tabela_peloNumero(temp->ficha_aluno.numero, tabela)==NULL)
+            controlo=1;
+        else
+            printf("%s\n", msg_erro_numeroDeEstudante);
+    }
+
+    char msg_a_pedir_nomeAluno[]="Introduza o nome do aluno:";
+    char msg_erro_nome_invalido[]="O nome introduzido e invalido.";
+    valida_inputs(msg_a_pedir_nomeAluno, msg_erro_nome_invalido, TAM, temp->ficha_aluno.nome, 5);
+
+    char msg_pedir_saldo_inicial[]="Introduza o saldo inicial do novo aluno:";
+    char msg_erro_saldo_invalido[]="O saldo introduzido e invalido.";
+    char saldo[7];
+    valida_inputs(msg_pedir_saldo_inicial, msg_erro_saldo_invalido, 7, saldo, 0);
+    sscanf(saldo, "%f", &temp->ficha_aluno.saldo);
+
+    char msg_a_pedir_data_de_nascimento[]="Introduza a data de nascimento do novo aluno:";
+    char msg_data_nascimento_invalida[]="A data introduzida e invalida. ";
+    char data_de_nascimento[11];
+    valida_inputs(msg_a_pedir_data_de_nascimento, msg_data_nascimento_invalida, 11, data_de_nascimento, 1);
+    sscanf(data_de_nascimento, "%d/%d/%d", &temp->ficha_aluno.data_nascimento.dia, &temp->ficha_aluno.data_nascimento.mes, &temp->ficha_aluno.data_nascimento.ano);
+
+    char msg_a_pedir_ano_frequentado[]="Introduza o ano escolar frequentado pelo aluno:";
+    char msg_anoF_invalido[]="O ano introduzido e invalido.";
+    char ano_frequentado[3];
+    valida_inputs(msg_a_pedir_ano_frequentado, msg_anoF_invalido, 3, ano_frequentado, 2);
+    sscanf(ano_frequentado, "%d", &temp->ficha_aluno.ano);
+
+    char msg_a_pedir_a_turma[]="Introduza a turma do aluno (formato A a Z sempre em maisculas):";
+    char msg_turmaI_invalida[]="A formato introduzido é invalido.";
+    char turma[2];
+    valida_inputs(msg_a_pedir_a_turma, msg_turmaI_invalida, 2, turma, 3);
+    temp->ficha_aluno.turma=turma[0];
+
+    cria_despesa(&temp->ficha_aluno.lista_De_Despesas); // adiciornar mecanismo caso nao seja possivel alocar memoria return -1;
+
+    *novo_aluno=temp;
+
+    return 0;
 }
