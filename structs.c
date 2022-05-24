@@ -63,6 +63,13 @@ int filtrar(int parametro_de_comaparacao, char* bufer, int tamanho_maximo){
                 return 0;
             return 1;
 
+        case 4:
+            for (int i = 0; i < strlen(bufer); ++i) {
+                if(bufer[i]<'0' || bufer[i]>'9')
+                    return 0;
+            }
+            return 1;
+
         default:
             return 1;
     }
@@ -85,7 +92,7 @@ int valida_inputs(char* msg_a_pedir_valor, char* msg_de_erro, int size_of_string
                 printf("%s\n", msg_de_erro);
         }
         strcpy_s(string, size_of_string, buffer);
-        printf("%d\n", strlen(string));
+        //printf("%d\n", strlen(string));
         for (int i = size_of_string + 1; i < 0; --i) {
             free(buffer + i);
         }
@@ -133,24 +140,6 @@ int verifica_se_a_data_e_valida(data* pData, int ano_atual){
     return 1;
 }
 
-int valida_caracters(char* string_introduzida){
-    int controlo=1;
-
-    for (int i = 0; i < 10; ++i) {
-        if(i==2  || i==5){
-            if(string_introduzida[i]!='/')
-                controlo=0;
-        }else {
-            if('9'<string_introduzida[i])
-                controlo=0;
-            if('0'>string_introduzida[i])
-                controlo=0;
-        }
-    }
-
-    return controlo;
-}
-
 
 int compra_datas(data* chave, data* data1){
     if((chave->ano>data1->ano) || ((chave->ano==data1->ano) && (chave->mes > data1->mes)) || ((chave->ano==data1->ano) && (chave->mes==data1->mes) && (chave->dia > data1->dia)))
@@ -159,7 +148,6 @@ int compra_datas(data* chave, data* data1){
         return 0;
     return 2;
 }
-
 
 
 /* Funções sobre despesas */
@@ -180,7 +168,7 @@ int verifica_se_a_lista_de_despesas_estaVazia(pDespesas lista){
     return 0;
 }
 
-pDespesas desetroi_lista_de_despesas(pDespesas lista){
+pDespesas destroi_lista_de_despesas(pDespesas lista){
     pDespesas temp;
     while (!verifica_se_a_lista_de_despesas_estaVazia(lista)){
         temp=lista;
@@ -268,6 +256,7 @@ pAlunos destroi_lista_de_alunos(pAlunos lista){
     pAlunos temp;
     while (!verifica_lista_de_alunoVazia(lista)){
         temp=lista;
+        destroi_lista_de_despesas(temp->ficha_aluno.lista_De_Despesas);
         lista=lista->proximo;
         free(temp);
     }
@@ -314,9 +303,10 @@ int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
     while(controlo==0){
         valida_inputs(msg_a_pedir_numero_de_estudante, msg_erro_numeroDeEstudante, 8, numero_de_estudante, 9);
         sscanf(numero_de_estudante, "%d", &temp->ficha_aluno.numero);
-        if(procura_aluno_na_tabela_peloNumero(temp->ficha_aluno.numero, tabela)==NULL)
-            controlo=1;
-        else
+        if(procura_aluno_na_tabela_peloNumero(temp->ficha_aluno.numero, tabela)==NULL) {
+            controlo = 1;
+            printf("ok\n");
+        } else
             printf("%s\n", msg_erro_numeroDeEstudante);
     }
 
@@ -348,8 +338,9 @@ int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
     valida_inputs(msg_a_pedir_a_turma, msg_turmaI_invalida, 2, turma, 3);
     temp->ficha_aluno.turma=turma[0];
 
-    cria_despesa(&temp->ficha_aluno.lista_De_Despesas); // adiciornar mecanismo caso nao seja possivel alocar memoria return -1;
+    inicializa_lista_de_depesas(&temp->ficha_aluno.lista_De_Despesas); // adiciornar mecanismo caso nao seja possivel alocar memoria return -1;
 
+    temp->proximo=NULL;
     *novo_aluno=temp;
 
     return 0;
