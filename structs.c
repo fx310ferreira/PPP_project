@@ -63,7 +63,7 @@ int filtrar(int parametro_de_comaparacao, char* bufer, int tamanho_maximo){
                 return 0;
             return 1;
 
-        case 4:
+        case 4: // força a string a ser uma cadeia de caracteres
             for (int i = 0; i < strlen(bufer); ++i) {
                 if(bufer[i]<'0' || bufer[i]>'9')
                     return 0;
@@ -241,7 +241,6 @@ int criar_tabela(pAlunos** tabela){
     for (int i = 0; i < 26; ++i) {
         if(inicializa_lista_de_alunos(*tabela+i)==1)
             return 1;
-
     }
     return 0;
 }
@@ -283,32 +282,35 @@ int index_da_tabela(char* string){
 pAlunos procura_aluno_na_tabela_peloNumero(int numero, pAlunos* tabela){
     pAlunos temp;
     for (int i = 0; i < 26; ++i) {
-        temp = tabela[i];
-        while (temp->proximo!=NULL){
-            if(temp->proximo->ficha_aluno.numero==numero)
+        temp = tabela[i]->proximo;
+        while (temp!=NULL){
+            if(temp->ficha_aluno.numero==numero)
                 return temp;
+            temp=temp->proximo;
         }
     }
     return NULL;
 }
 
+
 int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
     pAlunos temp = (pAlunos) malloc(sizeof(noAluno));
     if(temp==NULL){ return 1; }
+    if(inicializa_lista_de_depesas(&temp->ficha_aluno.lista_De_Despesas)==-1){ return 1; }
 
     char numero_de_estudante[8];
     char msg_a_pedir_numero_de_estudante[]="Introduza o numero de estudadente do aluno:";
     char msg_erro_numeroDeEstudante[]="O numero introduzido e invalido.";
-    int controlo=0;
-    while(controlo==0){
-        valida_inputs(msg_a_pedir_numero_de_estudante, msg_erro_numeroDeEstudante, 8, numero_de_estudante, 9);
-        sscanf(numero_de_estudante, "%d", &temp->ficha_aluno.numero);
-        if(procura_aluno_na_tabela_peloNumero(temp->ficha_aluno.numero, tabela)==NULL) {
-            controlo = 1;
-            printf("ok\n");
-        } else
+    int numero, controlo=0;
+    while (controlo==0){
+        valida_inputs(msg_a_pedir_numero_de_estudante, msg_erro_numeroDeEstudante, 8, numero_de_estudante, 4);
+        sscanf(numero_de_estudante, "%d", &numero);
+        if(procura_aluno_na_tabela_peloNumero(numero, tabela)==NULL)
+            controlo=1;
+        else
             printf("%s\n", msg_erro_numeroDeEstudante);
     }
+    temp->ficha_aluno.numero=numero;
 
     char msg_a_pedir_nomeAluno[]="Introduza o nome do aluno:";
     char msg_erro_nome_invalido[]="O nome introduzido e invalido.";
@@ -333,15 +335,30 @@ int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
     sscanf(ano_frequentado, "%d", &temp->ficha_aluno.ano);
 
     char msg_a_pedir_a_turma[]="Introduza a turma do aluno (formato A a Z sempre em maisculas):";
-    char msg_turmaI_invalida[]="A formato introduzido é invalido.";
+    char msg_turmaI_invalida[]="A formato introduzido e invalido.";
     char turma[2];
     valida_inputs(msg_a_pedir_a_turma, msg_turmaI_invalida, 2, turma, 3);
     temp->ficha_aluno.turma=turma[0];
 
-    inicializa_lista_de_depesas(&temp->ficha_aluno.lista_De_Despesas); // adiciornar mecanismo caso nao seja possivel alocar memoria return -1;
-
     temp->proximo=NULL;
     *novo_aluno=temp;
-
     return 0;
+}
+
+void lugar_para_inserirAl(pAlunos* tabela, pAlunos* antrior, pAlunos* atual, pAlunos novo_elemento){
+    printf("%d \n", index_da_tabela(novo_elemento->ficha_aluno.nome));
+    *antrior=tabela[index_da_tabela(novo_elemento->ficha_aluno.nome)];
+    *atual=tabela[index_da_tabela(novo_elemento->ficha_aluno.nome)]->proximo;
+    while ((*atual)!=NULL && strcasecmp(novo_elemento->ficha_aluno.nome, (*atual)->ficha_aluno.nome)<=0){
+        (*antrior)=(*atual);
+        (*atual)=(*atual)->proximo;
+    }
+}
+
+void insere_novoAl_naTabela(pAlunos* tabela, pAlunos novo_aluno){
+    pAlunos antrior, atual;
+
+    lugar_para_inserirAl(tabela,  &antrior, &atual, novo_aluno);
+    novo_aluno->proximo=antrior->proximo;
+    antrior->proximo=novo_aluno;
 }

@@ -98,6 +98,8 @@ void destroi_tabela(pAlunos* tabela);
 
 int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno);
 
+void lugar_para_inserirAl(pAlunos* tabela, pAlunos* antrior, pAlunos* atual, pAlunos novo_elemento);
 
+void insere_novoAl_naTabela(pAlunos* tabela, pAlunos novo_aluno);
 
 #endif //PROJETO_STRUCTS_H
