@@ -1,0 +1,4 @@
+S,1,amilcar gradioso,13/10/2002,10.10,11,E
+S,2,amilcar pequenino,13/10/2002,10.10,11,E
+S,3,amilcar gigaznte,13/10/2002,10.10,11,E
+S,4,arsenio gradioso,13/10/2002,10.10,11,E

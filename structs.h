@@ -98,6 +98,8 @@ void destroi_tabela(pAlunos* tabela);
 
 int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno);
 
+void save(pAlunos * plista_de_alunos);
 
+void load(pAlunos * plista_de_alunos);
 
 #endif //PROJETO_STRUCTS_H

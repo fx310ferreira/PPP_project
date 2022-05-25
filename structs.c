@@ -75,7 +75,6 @@ int filtrar(int parametro_de_comaparacao, char* bufer, int tamanho_maximo){
     }
 }
 
-
 int valida_inputs(char* msg_a_pedir_valor, char* msg_de_erro, int size_of_string, char* string, int parametro_de_comparacao){
     char* buffer= (char*)malloc(sizeof(char)*(size_of_string+1));
     if(buffer!=NULL){
@@ -100,7 +99,6 @@ int valida_inputs(char* msg_a_pedir_valor, char* msg_de_erro, int size_of_string
     }
     return 1;
 }
-
 
 /*Datas*/
 
@@ -140,7 +138,6 @@ int verifica_se_a_data_e_valida(data* pData, int ano_atual){
     return 1;
 }
 
-
 int compra_datas(data* chave, data* data1){
     if((chave->ano>data1->ano) || ((chave->ano==data1->ano) && (chave->mes > data1->mes)) || ((chave->ano==data1->ano) && (chave->mes==data1->mes) && (chave->dia > data1->dia)))
         return 1;
@@ -148,7 +145,6 @@ int compra_datas(data* chave, data* data1){
         return 0;
     return 2;
 }
-
 
 /* Funções sobre despesas */
 
@@ -229,7 +225,7 @@ void inser_despesa(pDespesas lista_De_Despesas){
 
 int inicializa_lista_de_alunos(pAlunos* lista_de_alunos){
     pAlunos temp=(pAlunos) malloc(sizeof(noAluno));
-    if(temp==NULL){ return 1; }
+    if(temp==NULL) return 1;
     temp->proximo=NULL;
     *lista_de_alunos = temp;
     return 0;
@@ -241,7 +237,6 @@ int criar_tabela(pAlunos** tabela){
     for (int i = 0; i < 26; ++i) {
         if(inicializa_lista_de_alunos(*tabela+i)==1)
             return 1;
-
     }
     return 0;
 }
@@ -294,21 +289,24 @@ pAlunos procura_aluno_na_tabela_peloNumero(int numero, pAlunos* tabela){
 
 int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
     pAlunos temp = (pAlunos) malloc(sizeof(noAluno));
-    if(temp==NULL){ return 1; }
+    if(temp==NULL) return 1;
+    if(inicializa_lista_de_depesas(&temp->ficha_aluno.lista_De_Despesas)==-1) return 1;
 
-    char numero_de_estudante[8];
-    char msg_a_pedir_numero_de_estudante[]="Introduza o numero de estudadente do aluno:";
-    char msg_erro_numeroDeEstudante[]="O numero introduzido e invalido.";
-    int controlo=0;
-    while(controlo==0){
-        valida_inputs(msg_a_pedir_numero_de_estudante, msg_erro_numeroDeEstudante, 8, numero_de_estudante, 9);
-        sscanf(numero_de_estudante, "%d", &temp->ficha_aluno.numero);
-        if(procura_aluno_na_tabela_peloNumero(temp->ficha_aluno.numero, tabela)==NULL) {
-            controlo = 1;
-            printf("ok\n");
-        } else
-            printf("%s\n", msg_erro_numeroDeEstudante);
-    }
+    //char numero_de_estudante[8];
+    //char msg_a_pedir_numero_de_estudante[]="Introduza o numero de estudadente do aluno:";
+    //char msg_erro_numeroDeEstudante[]="O numero introduzido e invalido.";
+    //int controlo=0;
+//
+    //while(controlo==0){
+    //    valida_inputs(msg_a_pedir_numero_de_estudante, msg_erro_numeroDeEstudante, 8, numero_de_estudante, 9);
+    //    sscanf(numero_de_estudante, "%d", &temp->ficha_aluno.numero);
+    //    if(procura_aluno_na_tabela_peloNumero(temp->ficha_aluno.numero, tabela)==NULL) {
+    //        controlo = 1;
+    //        printf("ok\n");
+    //    } else
+    //        printf("%s\n", msg_erro_numeroDeEstudante);
+    //}
+    temp->ficha_aluno.numero=0;
 
     char msg_a_pedir_nomeAluno[]="Introduza o nome do aluno:";
     char msg_erro_nome_invalido[]="O nome introduzido e invalido.";
@@ -344,4 +342,68 @@ int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
     *novo_aluno=temp;
 
     return 0;
+}
+
+//void lugar_para_inserirAl(pAlunos* tabela, pAlunos* antrior, pAlunos* atual, pAlunos novo_elemento){
+//    //printf("%d \n", index_da_tabela(novo_elemento->ficha_aluno.nome));
+//    *antrior=tabela[index_da_tabela(novo_elemento->ficha_aluno.nome)];
+//    *atual=tabela[index_da_tabela(novo_elemento->ficha_aluno.nome)]->proximo;
+//    while ((*atual)!=NULL && strcasecmp(novo_elemento->ficha_aluno.nome, (*atual)->ficha_aluno.nome)<=0){
+//        (*antrior)=(*atual);
+//        (*atual)=(*atual)->proximo;
+//    }
+//}
+//
+//void insere_novoAl_naTabela(pAlunos* tabela, pAlunos novo_aluno){
+//    pAlunos antrior, atual;
+//
+//    lugar_para_inserirAl(tabela,  &antrior, &atual, novo_aluno);
+//    novo_aluno->proximo=antrior->proximo;
+//    antrior->proximo=novo_aluno;
+//}
+
+void load(pAlunos* plista_de_alunos){
+    FILE * file = fopen("Save\\save.txt", "r");
+    char string[100] = " ";
+    inicializa_lista_de_alunos(plista_de_alunos);
+    pAlunos lista
+    = (*plista_de_alunos);
+    pAlunos helper = lista;
+    while (fgets(string, 100, file) != NULL){
+        char* token = strtok(string, ",");
+        if(strcmp(token, "S") == 0){ // se for um aluno executa
+            pAlunos new = (pAlunos) malloc(sizeof(noAluno));
+            helper->proximo = new;
+            new->proximo=NULL;
+            token = strtok(NULL, ",");
+            sscanf(token, "%d", &new->ficha_aluno.numero);
+            token = strtok(NULL, ",");
+            strcpy(new->ficha_aluno.nome, token);
+            token = strtok(NULL, ",");
+            sscanf(token, "%d/%d/%d", &new->ficha_aluno.data_nascimento.dia,&new->ficha_aluno.data_nascimento.mes,&new->ficha_aluno.data_nascimento.ano);
+            token = strtok(NULL, ",");
+            sscanf(token, "%f", &new->ficha_aluno.saldo);
+            token = strtok(NULL, ",");
+            sscanf(token, "%d", &new->ficha_aluno.ano);
+            token = strtok(NULL, ",");
+            sscanf(token, "%c", &new->ficha_aluno.turma);
+            helper = new;
+        }else{ // se  for despesa executa
+
+        }
+    }
+    fclose(file);
+}
+
+void save(pAlunos* plista_de_alunos){
+    FILE * file = fopen("Save\\save.txt", "w");
+    pAlunos new = (*plista_de_alunos)->proximo;
+    while(new != NULL) {
+        fprintf(file, "S,%d,%s,%d/%d/%d,%.2f,%d,%c\n", new->ficha_aluno.numero, new->ficha_aluno.nome,
+                new->ficha_aluno.data_nascimento.dia, new->ficha_aluno.data_nascimento.mes,
+                new->ficha_aluno.data_nascimento.ano, new->ficha_aluno.saldo, new->ficha_aluno.ano,
+                new->ficha_aluno.turma);
+        new = new->proximo;
+    }
+    fclose(file);
 }
