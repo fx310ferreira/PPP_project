@@ -63,7 +63,7 @@ int filtrar(int parametro_de_comaparacao, char* bufer, int tamanho_maximo){
                 return 0;
             return 1;
 
-        case 4:
+        case 4: // forca a string ser uma cadeia de caracters
             for (int i = 0; i < strlen(bufer); ++i) {
                 if(bufer[i]<'0' || bufer[i]>'9')
                     return 0;
@@ -91,7 +91,6 @@ int valida_inputs(char* msg_a_pedir_valor, char* msg_de_erro, int size_of_string
                 printf("%s\n", msg_de_erro);
         }
         strcpy_s(string, size_of_string, buffer);
-        //printf("%d\n", strlen(string));
         for (int i = size_of_string + 1; i < 0; --i) {
             free(buffer + i);
         }
@@ -287,7 +286,7 @@ pAlunos procura_aluno_na_tabela_peloNumero(int numero, pAlunos* tabela){
     return NULL;
 }
 
-int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
+int cria_ficha_para_novo_aluno(pAlunos* novo_aluno){ //pAlunos* tabela,
     pAlunos temp = (pAlunos) malloc(sizeof(noAluno));
     if(temp==NULL) return 1;
     if(inicializa_lista_de_depesas(&temp->ficha_aluno.lista_De_Despesas)==-1) return 1;
@@ -335,8 +334,6 @@ int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
     char turma[2];
     valida_inputs(msg_a_pedir_a_turma, msg_turmaI_invalida, 2, turma, 3);
     temp->ficha_aluno.turma=turma[0];
-
-    inicializa_lista_de_depesas(&temp->ficha_aluno.lista_De_Despesas); // adiciornar mecanismo caso nao seja possivel alocar memoria return -1;
 
     temp->proximo=NULL;
     *novo_aluno=temp;

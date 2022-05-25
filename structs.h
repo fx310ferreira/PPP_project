@@ -96,7 +96,8 @@ pAlunos destroi_lista_de_alunos(pAlunos lista);
 
 void destroi_tabela(pAlunos* tabela);
 
-int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno);
+int cria_ficha_para_novo_aluno( pAlunos* novo_aluno);
+//pAlunos* tabela,
 
 void save(pAlunos * plista_de_alunos);
 
