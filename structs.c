@@ -176,11 +176,11 @@ pDespesas destroi_lista_de_despesas(pDespesas lista){
 void procura_lugar_para_despesa(pDespesas lista, data* pData, pDespesas* anterior, pDespesas* atual){
     *anterior=lista;
     *atual=lista->proximo;
-    while ((*atual)!=NULL && compra_datas(pData, &((*atual)->ficha_despesa.Data))>=1){
+    while ((*atual)!=NULL && compra_datas(pData, &((*atual)->ficha_despesa.date))>=1){
         *anterior=*atual;
         *atual=(*atual)->proximo;
     }
-    if((*atual)!=NULL && compra_datas(&(*atual)->ficha_despesa.Data, pData)!=2)
+    if((*atual)!=NULL && compra_datas(&(*atual)->ficha_despesa.date, pData)!=2)
         (*atual)=NULL;
 }
 
@@ -199,7 +199,7 @@ int cria_despesa(pDespesas* pldespesa){
     char msg_pede_data[]="Introduza a data da despesa:";
     char msg_data_invalida[]="A data introduzida e invalida.";
     valida_inputs(msg_pede_data, msg_data_invalida, 11, data, 1);
-    sscanf(data, "%d/%d/%d", &temp->ficha_despesa.Data.dia, &temp->ficha_despesa.Data.mes, &temp->ficha_despesa.Data.ano);
+    sscanf(data, "%d/%d/%d", &temp->ficha_despesa.date.dia, &temp->ficha_despesa.date.mes, &temp->ficha_despesa.date.ano);
 
     char valor_da_despesa[7]; //0-999999 euros
     char msg_a_pedir_valor_da_despesa[]="Introduza o valor da despesa(0-999999 euros): ";
@@ -214,7 +214,7 @@ int cria_despesa(pDespesas* pldespesa){
 void inser_despesa(pDespesas lista_De_Despesas){
     pDespesas nova_despesa, antrior, atual;
     cria_despesa(&nova_despesa);
-    procura_lugar_para_despesa(lista_De_Despesas,&nova_despesa->ficha_despesa.Data, &antrior, &atual);
+    procura_lugar_para_despesa(lista_De_Despesas,&nova_despesa->ficha_despesa.date, &antrior, &atual);
     nova_despesa->proximo=antrior->proximo;
     antrior->proximo=nova_despesa;
 }
@@ -339,6 +339,35 @@ int cria_ficha_para_novo_aluno(pAlunos* novo_aluno){ //pAlunos* tabela,
     *novo_aluno=temp;
 
     return 0;
+}
+
+void print_student(pAlunos * plista_de_alunos){
+    pAlunos new = (*plista_de_alunos)->proximo;
+    while(new != NULL) {
+        printf("'%s' ", new->ficha_aluno.nome);
+        new = new->proximo;
+    }
+    printf("\n");
+}
+
+int delete_student(pAlunos * plista_de_alunos, char* nome){
+    pAlunos ant = NULL;
+    pAlunos actual = (*plista_de_alunos)->proximo;
+    while(actual != NULL && strcmp(actual->ficha_aluno.nome,nome) != 0){
+        ant = actual;
+        actual = actual->proximo;
+    }
+    if(actual== NULL) return 0;
+    if(ant == NULL){
+        ant = actual;
+        (*plista_de_alunos)->proximo = actual->proximo;
+        free(ant);
+    }
+    else{
+        ant->proximo = actual->proximo;
+        free(actual);
+    }
+    return 1;
 }
 
 //void lugar_para_inserirAl(pAlunos* tabela, pAlunos* antrior, pAlunos* atual, pAlunos novo_elemento){

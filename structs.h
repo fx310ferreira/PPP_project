@@ -5,6 +5,7 @@
 #ifndef PROJETO_STRUCTS_H
 #define PROJETO_STRUCTS_H
 #define TAM 200 // defenir o tamnho dos parametros usados na funcao valida para auxiliar as
+#define NAME 100
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,7 +17,7 @@ typedef struct{ //estrutura que guarda datas
 }data;
 
 typedef struct{
-    data Data;
+    data date;
     float valor;
     char desc[100];
 }despesa;
@@ -102,5 +103,9 @@ int cria_ficha_para_novo_aluno( pAlunos* novo_aluno);
 void save(pAlunos * plista_de_alunos);
 
 void load(pAlunos * plista_de_alunos);
+
+void print_student(pAlunos * plista_de_alunos);
+
+int delete_student(pAlunos * plista_de_alunos, char* nome);
 
 #endif //PROJETO_STRUCTS_H
