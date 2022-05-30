@@ -46,9 +46,10 @@ typedef struct noAluno{
 
 typedef struct noAluno* pAlunos;
 
-//typedef struct filaAluno{
-//    no_filaAluno * inicio;
-//}filaAluno;
+typedef struct pNoAluno{
+    pAlunos apontaPara;
+    struct pNoAluno* proximo;
+}pNoAluno;
 
 
 /* Funcao para "processar" inputs */
@@ -96,10 +97,44 @@ pAlunos destroi_lista_de_alunos(pAlunos lista);
 
 void destroi_tabela(pAlunos* tabela);
 
+pAlunos procura_aluno_na_tabela_peloNumero(int numero, pAlunos* tabela);
+
 int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno);
 
 void lugar_para_inserirAl(pAlunos* tabela, pAlunos* antrior, pAlunos* atual, pAlunos novo_elemento);
 
 void insere_novoAl_naTabela(pAlunos* tabela, pAlunos novo_aluno);
+
+void mostra_ficha_do_aluno(pAlunos aluno);
+
+int usuario_procura_aluno(pAlunos* tabela, char* msg_a_preguntar_pelo_aluno, char* msg_aluno_nmao_encontrado, char* msg_aluno_encontrado, pAlunos* aluno_a_procurar);
+
+int eliminar_Aluno(pAlunos* tabela);
+
+
+
+void insere_novoAl_naFila(pAlunos fila, pAlunos novo_aluno);
+
+void procurar_lugar_na_fila(pAlunos fila, pAlunos* antrior, pAlunos* atual, pAlunos novo_elemento);
+
+/* Funções sobre pNoAluno */
+
+int inicializa_lista_pNoal(pNoAluno** pLista);
+
+int verifica_vazia_pNoal(pNoAluno* lista);
+
+int cria_pNoal(pNoAluno** pnovo_elemento, pAlunos apontaPara);
+
+void procura_lugar_pNoal_ordemalpha(pNoAluno* lista, pNoAluno** atual, pNoAluno** anterior, pNoAluno* novo_elemento);
+
+void procura_lugar_pNoal_ordedecresscente(pNoAluno* lista, pNoAluno** atual, pNoAluno** anterior, pNoAluno* novo_elemento);
+
+pNoAluno* destroi_lista_pNoal(pNoAluno* lista);
+
+/* Funções sobre ficheiros */
+
+void load(pAlunos* plista_de_alunos);
+
+void save(pAlunos* plista_de_alunos);
 
 #endif //PROJETO_STRUCTS_H

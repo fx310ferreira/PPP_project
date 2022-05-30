@@ -70,6 +70,12 @@ int filtrar(int parametro_de_comaparacao, char* bufer, int tamanho_maximo){
             }
             return 1;
 
+        case 5: // Força o primeiro caracter ser letra em CAPS
+            if(bufer[0]>='A' && bufer[0]<='Z')
+                return 1;
+            else
+                return 0;
+
         default:
             return 1;
     }
@@ -92,7 +98,6 @@ int valida_inputs(char* msg_a_pedir_valor, char* msg_de_erro, int size_of_string
                 printf("%s\n", msg_de_erro);
         }
         strcpy_s(string, size_of_string, buffer);
-        //printf("%d\n", strlen(string));
         for (int i = size_of_string + 1; i < 0; --i) {
             free(buffer + i);
         }
@@ -175,6 +180,7 @@ pDespesas destroi_lista_de_despesas(pDespesas lista){
         lista=lista->proximo;
         free(temp);
     }
+    free(lista);
     return NULL;
 }
 
@@ -211,6 +217,8 @@ int cria_despesa(pDespesas* pldespesa){
     char msg_valor_nValido[]="O valor introduzido nao e valido.";
     valida_inputs(msg_a_pedir_valor_da_despesa, msg_valor_nValido, 7, valor_da_despesa, 0);
     sscanf(valor_da_despesa, "%f", &temp->ficha_despesa.valor);
+
+    temp->proximo=NULL;
 
     *pldespesa=temp;
     return 0;
@@ -272,19 +280,15 @@ void destroi_tabela(pAlunos* tabela){
 
 int index_da_tabela(char* string){
     char t=string[0];
-
-    if( t <= 'z' && t >= 'a')
-        return t-'a';
-    else
-        return t-'A';
+    return t-'A';
 }
 
 pAlunos procura_aluno_na_tabela_peloNumero(int numero, pAlunos* tabela){
     pAlunos temp;
     for (int i = 0; i < 26; ++i) {
-        temp = tabela[i]->proximo;
-        while (temp!=NULL){
-            if(temp->ficha_aluno.numero==numero)
+        temp = tabela[i];
+        while (temp->proximo!=NULL){
+            if(temp->proximo->ficha_aluno.numero==numero)
                 return temp;
             temp=temp->proximo;
         }
@@ -322,7 +326,7 @@ int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
     valida_inputs(msg_pedir_saldo_inicial, msg_erro_saldo_invalido, 7, saldo, 0);
     sscanf(saldo, "%f", &temp->ficha_aluno.saldo);
 
-    char msg_a_pedir_data_de_nascimento[]="Introduza a data de nascimento do novo aluno:";
+    char msg_a_pedir_data_de_nascimento[]="Introduza a data de nascimento do novo aluno(fotmato DD/MM/AAAA):";
     char msg_data_nascimento_invalida[]="A data introduzida e invalida. ";
     char data_de_nascimento[11];
     valida_inputs(msg_a_pedir_data_de_nascimento, msg_data_nascimento_invalida, 11, data_de_nascimento, 1);
@@ -346,10 +350,9 @@ int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
 }
 
 void lugar_para_inserirAl(pAlunos* tabela, pAlunos* antrior, pAlunos* atual, pAlunos novo_elemento){
-    printf("%d \n", index_da_tabela(novo_elemento->ficha_aluno.nome));
     *antrior=tabela[index_da_tabela(novo_elemento->ficha_aluno.nome)];
     *atual=tabela[index_da_tabela(novo_elemento->ficha_aluno.nome)]->proximo;
-    while ((*atual)!=NULL && strcasecmp(novo_elemento->ficha_aluno.nome, (*atual)->ficha_aluno.nome)<=0){
+    while ((*atual)!=NULL && strcasecmp(novo_elemento->ficha_aluno.nome, (*atual)->ficha_aluno.nome)>=0){
         (*antrior)=(*atual);
         (*atual)=(*atual)->proximo;
     }
@@ -362,3 +365,243 @@ void insere_novoAl_naTabela(pAlunos* tabela, pAlunos novo_aluno){
     novo_aluno->proximo=antrior->proximo;
     antrior->proximo=novo_aluno;
 }
+
+void procurar_lugar_na_fila(pAlunos fila, pAlunos* antrior, pAlunos* atual, pAlunos novo_elemento){
+    *antrior=fila;
+    *atual=fila->proximo;
+    while ((*atual)!=NULL && strcasecmp(novo_elemento->ficha_aluno.nome, (*atual)->ficha_aluno.nome)>=0){
+        (*antrior)=(*atual);
+        (*atual)=(*atual)->proximo;
+    }
+}
+
+void insere_novoAl_naFila(pAlunos fila, pAlunos novo_aluno){
+    pAlunos antrior, atual;
+
+    procurar_lugar_na_fila(fila,  &antrior, &atual, novo_aluno);
+    novo_aluno->proximo=antrior->proximo;
+    antrior->proximo=novo_aluno;
+}
+
+void mostra_ficha_do_aluno(pAlunos aluno){
+    printf("Ficha do aluno %s numero %d:\n", aluno->ficha_aluno.nome, aluno->ficha_aluno.numero);
+    printf("Nome: %s\n"
+           "Numero: %d\n"
+           "Turma: %c\n"
+           "Data de nacimento: %d/%d/%d\n"
+           "Saldo: %f\n", aluno->ficha_aluno.nome, aluno->ficha_aluno.numero, aluno->ficha_aluno.turma,aluno->ficha_aluno.data_nascimento.dia, aluno->ficha_aluno.data_nascimento.mes, aluno->ficha_aluno.data_nascimento.ano, aluno->ficha_aluno.saldo);
+    if(!verifica_se_a_lista_de_despesas_estaVazia(aluno->ficha_aluno.lista_De_Despesas)){
+        pDespesas temp=aluno->ficha_aluno.lista_De_Despesas->proximo;
+        printf("\nLista de Despesa de %s:\n", aluno->ficha_aluno.nome);
+        while(temp!=NULL){
+            printf("Despesa do dia %d/%d/%d: \n", temp->ficha_despesa.Data.dia, temp->ficha_despesa.Data.mes, temp->ficha_despesa.Data.ano);
+            printf("Descricao:\n%s\n", temp->ficha_despesa.desc);
+            printf("Valor: %f\n\n", temp->ficha_despesa.valor);
+            temp=temp->proximo;
+        }
+    } else
+        printf("Este aluno nao tem nenhuma despesa reguistada.\n\n");
+}
+
+int usuario_procura_aluno(pAlunos* tabela, char* msg_a_preguntar_pelo_aluno, char* msg_aluno_nao_encontrado, char* msg_aluno_encontrado, pAlunos* aluno_antes){
+    pAlunos aluno;
+    int opcao, controlo=0;
+    char op[2];
+    char op_invalida[]="A opcao introduzida invalida.";
+    while (controlo==0) {
+        valida_inputs(msg_a_preguntar_pelo_aluno, op_invalida, 2, op, 4);
+        sscanf(op, "%d", &opcao);
+        if(opcao==1 || opcao==2 || opcao==3){
+            controlo=1;
+        } else
+            printf("%s\n", op_invalida);
+    }
+    if(opcao==1){
+        char num[7];
+        int numero;
+        char pedir_numero_do_aluno[]="Introduza o numero do aluno:";
+        char formato_invalido[]="Formtato introduzido invalido.";
+        valida_inputs(pedir_numero_do_aluno, formato_invalido, 7, num, 4);
+        sscanf(num, "%d", &numero);
+        aluno=procura_aluno_na_tabela_peloNumero(numero, tabela);
+        *aluno_antes=aluno;
+        if(aluno!=NULL) {
+            printf("%s\n", msg_aluno_encontrado);
+        }else {
+            printf("%s\n", msg_aluno_nao_encontrado);
+            return 2;
+        }
+    } else{
+        char nome[TAM];
+        pAlunos testar;
+        int nElm=1;
+
+        char formato_invalido_nome[]="O formato introduzido invalido.";
+        if(opcao==2){
+            char pedir_nome_do_aluno[] = "Introduza o nome completo do aluno:";
+            valida_inputs(pedir_nome_do_aluno, formato_invalido_nome, TAM, nome, 5);
+        } else {
+            char pedir_nome_do_aluno[] = "Introduza parte nome do aluno:";
+            valida_inputs(pedir_nome_do_aluno, formato_invalido_nome, TAM, nome, 5);
+        }
+
+        pNoAluno* lista_auxiliar;
+        if(inicializa_lista_pNoal(&lista_auxiliar)==1){ return 1;}
+
+        if(opcao==2){
+            testar = tabela[index_da_tabela(nome)];
+            while (testar->proximo != NULL) {
+                if (strcasecmp(testar->proximo->ficha_aluno.nome, nome) == 0) {
+                    nElm++;
+                    pNoAluno *novo_elemneto, *atual, *anterior;
+                    if (cria_pNoal(&novo_elemneto, testar) == 1) { return 1; }
+                    procura_lugar_pNoal_ordemalpha(lista_auxiliar, &atual, &anterior, novo_elemneto);
+                    anterior->proximo = novo_elemneto;
+                    novo_elemneto = atual;
+                }
+                testar = testar->proximo;
+            }
+        } else {
+            for (int i = 0; i < 26; ++i) {
+                testar = tabela[i];
+                while (testar->proximo!=NULL){
+                    if(strstr(testar->proximo->ficha_aluno.nome, nome)!=NULL){
+                        nElm++;
+                        pNoAluno *novo_elemneto, *atual, *anterior;
+                        if (cria_pNoal(&novo_elemneto, testar) == 1) { return 1; }
+                        procura_lugar_pNoal_ordemalpha(lista_auxiliar, &atual, &anterior, novo_elemneto);
+                        anterior->proximo = novo_elemneto;
+                        novo_elemneto = atual;
+                    }
+                    testar=testar->proximo;
+                }
+            }
+        }
+
+        pNoAluno* temp=lista_auxiliar;
+        printf("\nEscolha uma das opcoes possiveis encontrada pelo programa se nao for nenhuma destas selecione a ultima opcao \"Nenhuma\"\n");
+        for (int i = 0; i < nElm; ++i) {
+            if(i==nElm-1)
+                printf("%d- Nenhuma.\n", i);
+            else{
+                temp=temp->proximo;
+                printf("%d- %s, n- %d ;\n", i, temp->apontaPara->proximo->ficha_aluno.nome, temp->apontaPara->proximo->ficha_aluno.numero);
+            }
+        }
+
+
+
+        lista_auxiliar= destroi_lista_pNoal(lista_auxiliar);
+    }
+    return 0;
+}
+
+int eliminar_Aluno(pAlunos* tabela){
+    pAlunos aluno_a_eleminar;
+
+    return 0;
+}
+
+
+/* Funções sobre pNoAluno */
+
+int inicializa_lista_pNoal(pNoAluno** pLista){
+    pNoAluno* temp= (pNoAluno*) malloc(sizeof(pNoAluno));
+    if(temp==NULL){ return 1;}
+    *pLista=temp;
+    return 0;
+}
+
+int verifica_vazia_pNoal(pNoAluno* lista){
+    if(lista->proximo==NULL)
+        return 1;
+    return 0;
+}
+
+int cria_pNoal(pNoAluno** pnovo_elemento, pAlunos apontaPara){
+    pNoAluno* temp=(pNoAluno*)malloc(sizeof(pNoAluno));
+    if(temp==NULL){ return 1;}
+    temp->proximo=NULL;
+    temp->apontaPara=apontaPara;
+    *pnovo_elemento=temp;
+    return 0;
+
+}
+
+void procura_lugar_pNoal_ordemalpha(pNoAluno* lista, pNoAluno** atual, pNoAluno** anterior, pNoAluno* novo_elemento){
+    *anterior=lista;
+    *atual=lista->proximo;
+    while ((*atual)!=NULL && strcasecmp(novo_elemento->apontaPara->ficha_aluno.nome, (*atual)->apontaPara->ficha_aluno.nome)>=0){
+        (*anterior)=(*atual);
+        (*atual)=(*atual)->proximo;
+    }
+}
+
+void procura_lugar_pNoal_ordedecresscente(pNoAluno* lista, pNoAluno** atual, pNoAluno** anterior, pNoAluno* novo_elemento){
+    *anterior=lista;
+    *atual=lista->proximo;
+    while ((*atual)!=NULL && novo_elemento->apontaPara->ficha_aluno.saldo <= (*atual)->apontaPara->ficha_aluno.saldo){
+        (*anterior)=(*atual);
+        (*atual)=(*atual)->proximo;
+    }
+}
+
+pNoAluno* destroi_lista_pNoal(pNoAluno* lista){
+    pNoAluno* temp;
+    while (!verifica_vazia_pNoal(lista)){
+        temp=lista;
+        lista=lista->proximo;
+        free(temp);
+    }
+    free(lista);
+    return NULL;
+}
+
+
+/* Funções sobre ficheiros */
+
+void load(pAlunos* plista_de_alunos){
+    FILE * file = fopen("teste.txt", "r");
+    char string[100] = " ";
+    inicializa_lista_de_alunos(plista_de_alunos);
+    pAlunos lista= (*plista_de_alunos);
+    pAlunos helper = lista;
+    while (fgets(string, 100, file) != NULL){
+        char* token = strtok(string, ",");
+        if(strcmp(token, "S") == 0){ // se for um aluno executa
+            pAlunos new = (pAlunos) malloc(sizeof(noAluno));
+            helper->proximo = new;
+            new->proximo=NULL;
+            token = strtok(NULL, ",");
+            sscanf(token, "%d", &new->ficha_aluno.numero);
+            token = strtok(NULL, ",");
+            strcpy(new->ficha_aluno.nome, token);
+            token = strtok(NULL, ",");
+            sscanf(token, "%d/%d/%d", &new->ficha_aluno.data_nascimento.dia,&new->ficha_aluno.data_nascimento.mes,&new->ficha_aluno.data_nascimento.ano);
+            token = strtok(NULL, ",");
+            sscanf(token, "%f", &new->ficha_aluno.saldo);
+            token = strtok(NULL, ",");
+            sscanf(token, "%d", &new->ficha_aluno.ano);
+            token = strtok(NULL, ",");
+            sscanf(token, "%c", &new->ficha_aluno.turma);
+            helper = new;
+        }else{ // se  for despesa executa
+
+        }
+    }
+    fclose(file);
+}
+
+void save(pAlunos* plista_de_alunos){
+    FILE * file = fopen("teste.txt", "a");
+    pAlunos new = (*plista_de_alunos)->proximo;
+    while(new != NULL) {
+        fprintf(file, "S,%d,%s,%d/%d/%d,%.2f,%d,%c\n", new->ficha_aluno.numero, new->ficha_aluno.nome,
+                new->ficha_aluno.data_nascimento.dia, new->ficha_aluno.data_nascimento.mes,
+                new->ficha_aluno.data_nascimento.ano, new->ficha_aluno.saldo, new->ficha_aluno.ano,
+                new->ficha_aluno.turma);
+        new = new->proximo;
+    }
+    fclose(file);
+}
+
