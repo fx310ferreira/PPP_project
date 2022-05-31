@@ -13,8 +13,6 @@ int main() {
         }
     }
 
-
-
     printf("\n");
 
     //pAlunos aluno_antrior_ao_procurado;
@@ -25,11 +23,10 @@ int main() {
     //usario_insere_aluno(tabela);
     //usario_insere_despesa(tabela);
     //carregar_a_conta_de_um_aluno(tabela);
-    listar_todos_aluno_por_ordem_alfabetica(tabela);
+    //listar_todos_aluno_por_ordem_alfabetica(tabela);
+    listar_alunos_abaixo_de_um_certoSaldo(tabela);
     save(tabela);
     destroi_tabela(tabela);
-
-
 
 
     return 0;

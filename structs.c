@@ -243,6 +243,12 @@ void inser_despesa(pAlunos aluno, pDespesas nova_despesa){
     antrior->proximo=nova_despesa;
 }
 
+void insere_despesa_auxiliar_load(pAlunos aluno, pDespesas nova_despesa){
+    pDespesas antrior, atual;
+    procura_lugar_para_despesa(aluno->ficha_aluno.lista_De_Despesas, &nova_despesa->ficha_despesa.Data, &antrior, &atual);
+    nova_despesa->proximo=antrior->proximo;
+    antrior->proximo=nova_despesa;
+}
 
 /* Funções sobre alunos */
 
@@ -384,14 +390,14 @@ void mostra_ficha_do_aluno(pAlunos aluno){
            "Numero: %d\n"
            "Turma: %c\n"
            "Data de nacimento: %d/%d/%d\n"
-           "Saldo: %f\n", aluno->ficha_aluno.nome, aluno->ficha_aluno.numero, aluno->ficha_aluno.turma,aluno->ficha_aluno.data_nascimento.dia, aluno->ficha_aluno.data_nascimento.mes, aluno->ficha_aluno.data_nascimento.ano, aluno->ficha_aluno.saldo);
+           "Saldo: %.2f\n", aluno->ficha_aluno.nome, aluno->ficha_aluno.numero, aluno->ficha_aluno.turma,aluno->ficha_aluno.data_nascimento.dia, aluno->ficha_aluno.data_nascimento.mes, aluno->ficha_aluno.data_nascimento.ano, aluno->ficha_aluno.saldo);
     if(!verifica_se_a_lista_de_despesas_estaVazia(aluno->ficha_aluno.lista_De_Despesas)){
         pDespesas temp=aluno->ficha_aluno.lista_De_Despesas->proximo;
         printf("\nLista de Despesa de %s:\n", aluno->ficha_aluno.nome);
         while(temp!=NULL){
             printf("Despesa do dia %d/%d/%d: \n", temp->ficha_despesa.Data.dia, temp->ficha_despesa.Data.mes, temp->ficha_despesa.Data.ano);
             printf("Descricao:\n%s\n", temp->ficha_despesa.desc);
-            printf("Valor: %f\n\n", temp->ficha_despesa.valor);
+            printf("Valor: %.2f\n\n", temp->ficha_despesa.valor);
             temp=temp->proximo;
         }
     } else
@@ -605,19 +611,54 @@ int carregar_a_conta_de_um_aluno(pAlunos* tabela){
 
 void listar_todos_aluno_por_ordem_alfabetica(pAlunos* tabela){
     pAlunos temp;
+    printf("\n");
     for (int i = 0; i < 26; ++i) {
         temp=tabela[i]->proximo;
-        printf("%c\n", 'A'+i);
-        if(temp==NULL){
-            printf("Nao existe nenhum aluno com o nome iniciado por esta letra.\n");
-        }else{
+        if(temp!=NULL){
+            printf("%c\n", 'A'+i);
             while (temp!=NULL){
                 printf("%s   numero: %d   turma: %c\n", temp->ficha_aluno.nome, temp->ficha_aluno.numero, temp->ficha_aluno.turma);
                 temp=temp->proximo;
             }
         }
-        printf("\n");
     }
+}
+
+int listar_alunos_abaixo_de_um_certoSaldo(pAlunos* tabela){
+    float valor_maximo;
+    char valor[7];
+    char msg_a_pedir_valor_minimo[]="Introduza o valor maximo que pretende que os alunos listados em ordem decrecentem tenham:";
+    char msg_erro_input_invalido[]="O valor introduzido e invalido.";
+    valida_inputs(msg_a_pedir_valor_minimo, msg_erro_input_invalido, 7, valor, 0);
+    sscanf(valor, "%f", &valor_maximo);
+    pNoAluno* lista;
+    pAlunos temp;
+    inicializa_lista_pNoal(&lista);
+    for (int i = 0; i < 26; ++i) {
+        temp=tabela[i]->proximo;
+        while (temp!=NULL){
+            if(temp->ficha_aluno.saldo<valor_maximo){
+                pNoAluno* novo_elm, *antrior, *atual;
+                if(cria_pNoal(&novo_elm, temp)==1) return 1;
+                procura_lugar_pNoal_ordedecresscente(lista, &atual, &antrior, novo_elm);
+                antrior->proximo=novo_elm;
+                novo_elm->proximo=atual;
+            }
+            temp=temp->proximo;
+        }
+    }
+    pNoAluno* t=lista->proximo;
+    if(verifica_vazia_pNoal(lista)==1){
+        printf("Nao foi encontrado nenhum aluno com um saldo infrior ao introduzido.\n");
+    } else {
+        printf("Lista por ordem decrecente de todos os alunos com um saldo infrior a %f.\n", valor_maximo);
+        while (t!=NULL){
+            printf("nome: %s saldo: %.2f\n", t->apontaPara->ficha_aluno.nome, t->apontaPara->ficha_aluno.saldo);
+            t=t->proximo;
+        }
+    }
+    lista= destroi_lista_pNoal(lista);
+    return 0;
 }
 
 /* Funções sobre pNoAluno */
@@ -657,7 +698,7 @@ void procura_lugar_pNoal_ordemalpha(pNoAluno* lista, pNoAluno** atual, pNoAluno*
 void procura_lugar_pNoal_ordedecresscente(pNoAluno* lista, pNoAluno** atual, pNoAluno** anterior, pNoAluno* novo_elemento){
     *anterior=lista;
     *atual=lista->proximo;
-    while ((*atual)!=NULL && novo_elemento->apontaPara->ficha_aluno.saldo <= (*atual)->apontaPara->proximo->ficha_aluno.saldo){
+    while ((*atual)!=NULL && novo_elemento->apontaPara->ficha_aluno.saldo <= (*atual)->apontaPara->ficha_aluno.saldo){
         (*anterior)=(*atual);
         (*atual)=(*atual)->proximo;
     }
@@ -677,17 +718,19 @@ pNoAluno* destroi_lista_pNoal(pNoAluno* lista){
 
 /* Funções sobre ficheiros */
 
-void load(pAlunos** ptabela){
+int load(pAlunos** ptabela){
     FILE * file = fopen("teste.txt", "r");
-    char string[100] = " ";
+    char string[400] = " ";
     criar_tabela(ptabela);
     pAlunos* tabela=*ptabela;
 
     pAlunos helper;
-    while (fgets(string, 100, file) != NULL){
+    while (fgets(string, 400, file) != NULL){
         char* token = strtok(string, ",");
         if(strcmp(token, "S") == 0){ // se for um aluno executa
             pAlunos new = (pAlunos) malloc(sizeof(noAluno));
+            if(new==NULL) return 1;
+            if(inicializa_lista_de_depesas(&new->ficha_aluno.lista_De_Despesas)==-1) return 1;
             helper = new;
             token = strtok(NULL, ",");
             sscanf(token, "%d", &new->ficha_aluno.numero);
@@ -701,13 +744,21 @@ void load(pAlunos** ptabela){
             sscanf(token, "%d", &new->ficha_aluno.ano);
             token = strtok(NULL, ",");
             sscanf(token, "%c", &new->ficha_aluno.turma);
-            inicializa_lista_de_depesas(&new->ficha_aluno.lista_De_Despesas);
             insere_novoAl_naTabela(tabela, new);
         }else{ // se  for despesa executa
-
+            pDespesas nova_despesa = (pDespesas)malloc(sizeof(noDespesa));
+            if(nova_despesa==NULL) return 1;
+            token = strtok(NULL, ",");
+            strcpy(nova_despesa->ficha_despesa.desc, token);
+            token = strtok(NULL, ",");
+            sscanf(token, "%d/%d/%d", &nova_despesa->ficha_despesa.Data.dia, &nova_despesa->ficha_despesa.Data.mes, &nova_despesa->ficha_despesa.Data.ano);
+            token = strtok(NULL, ",");
+            sscanf(token, "%f", &nova_despesa->ficha_despesa.valor);
+            insere_despesa_auxiliar_load(helper, nova_despesa);
         }
     }
     fclose(file);
+    return 0;
 }
 
 void save(pAlunos* tabela){
@@ -716,6 +767,7 @@ void save(pAlunos* tabela){
     fclose(file);
     file= fopen("teste.txt", "a");
     pAlunos new;
+    pDespesas despesa;
     for(int i=0; i<26; i++){
         new=tabela[i]->proximo;
         while (new != NULL){
@@ -723,6 +775,12 @@ void save(pAlunos* tabela){
                     new->ficha_aluno.data_nascimento.dia, new->ficha_aluno.data_nascimento.mes,
                     new->ficha_aluno.data_nascimento.ano, new->ficha_aluno.saldo, new->ficha_aluno.ano,
                     new->ficha_aluno.turma);
+            despesa=new->ficha_aluno.lista_De_Despesas->proximo;
+            while (despesa!=NULL){
+                fprintf(file, "D,%s,%d/%d/%d,%.2f\n", despesa->ficha_despesa.desc, despesa->ficha_despesa.Data.dia,
+                        despesa->ficha_despesa.Data.mes, despesa->ficha_despesa.Data.ano, despesa->ficha_despesa.valor);
+                despesa=despesa->proximo;
+            }
             new = new->proximo;
         }
     }

@@ -121,6 +121,8 @@ int carregar_a_conta_de_um_aluno(pAlunos* tabela);
 
 void listar_todos_aluno_por_ordem_alfabetica(pAlunos* tabela);
 
+int listar_alunos_abaixo_de_um_certoSaldo(pAlunos* tabela);
+
 /* Funções sobre pNoAluno */
 
 int inicializa_lista_pNoal(pNoAluno** pLista);
@@ -138,7 +140,7 @@ pNoAluno* destroi_lista_pNoal(pNoAluno* lista);
 
 /* Funções sobre ficheiros */
 
-void load(pAlunos** plista_de_alunos);
+int load(pAlunos** plista_de_alunos);
 
 void save(pAlunos* plista_de_alunos);
 
