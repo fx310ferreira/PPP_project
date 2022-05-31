@@ -80,7 +80,7 @@ void procura_lugar_para_despesa(pDespesas lista, data* pData, pDespesas* anterio
 
 int cria_despesa(pDespesas* pldespesa);
 
-void inser_despesa(pDespesas lista_De_Despesas);
+void inser_despesa(pAlunos aluno, pDespesas nova_despesa);
 
 
 /* Funções sobre alunos */
@@ -111,11 +111,15 @@ int usuario_procura_aluno(pAlunos* tabela, char* msg_a_preguntar_pelo_aluno, cha
 
 int eliminar_Aluno(pAlunos* tabela);
 
+int mostra_aluno_pedidoUser(pAlunos* tabela);
 
+int usario_insere_aluno(pAlunos* tabela);
 
-void insere_novoAl_naFila(pAlunos fila, pAlunos novo_aluno);
+int usario_insere_despesa(pAlunos* tabela);
 
-void procurar_lugar_na_fila(pAlunos fila, pAlunos* antrior, pAlunos* atual, pAlunos novo_elemento);
+int carregar_a_conta_de_um_aluno(pAlunos* tabela);
+
+void listar_todos_aluno_por_ordem_alfabetica(pAlunos* tabela);
 
 /* Funções sobre pNoAluno */
 
@@ -131,9 +135,10 @@ void procura_lugar_pNoal_ordedecresscente(pNoAluno* lista, pNoAluno** atual, pNo
 
 pNoAluno* destroi_lista_pNoal(pNoAluno* lista);
 
+
 /* Funções sobre ficheiros */
 
-void load(pAlunos* plista_de_alunos);
+void load(pAlunos** plista_de_alunos);
 
 void save(pAlunos* plista_de_alunos);
 
