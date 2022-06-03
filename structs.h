@@ -1,14 +1,5 @@
-//
-// Created by fx310 on 11/05/2022.
-//
-
 #ifndef PROJETO_STRUCTS_H
 #define PROJETO_STRUCTS_H
-#define TAM 200 // defenir o tamnho dos parametros usados na funcao valida para auxiliar as
-#define NAME 100
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 typedef struct{ //estrutura que guarda datas
     int dia;
@@ -17,7 +8,7 @@ typedef struct{ //estrutura que guarda datas
 }data;
 
 typedef struct{
-    data date;
+    data Data;
     float valor;
     char desc[100];
 }despesa;
@@ -47,65 +38,9 @@ typedef struct noAluno{
 
 typedef struct noAluno* pAlunos;
 
-//typedef struct filaAluno{
-//    no_filaAluno * inicio;
-//}filaAluno;
-
-
-/* Funcao para "processar" inputs */
-
-int filtrar(int parametro_de_comaparacao, char* bufer, int tamanho_maximo);
-
-int valida_inputs(char* msg_a_pedir_valor, char* msg_de_erro, int size_of_string, char* string, int parametro_de_comparacao);
-
-
-/* Funções sobre datas */
-
-int verifica_mes_30d(data* pData);
-
-int verifica_se_a_data_e_valida(data* pData, int ano_atual);
-
-int compra_datas(data* chave, data* data1);
-
-
-/* Funções sobre despesas */
-
-int inicializa_lista_de_depesas(pDespesas* plista);
-
-int verifica_se_a_lista_de_despesas_estaVazia(pDespesas lista);
-
-pDespesas destroi_lista_de_despesas(pDespesas lista);
-
-void procura_lugar_para_despesa(pDespesas lista, data* pData, pDespesas* anterior, pDespesas* atual);
-
-int cria_despesa(pDespesas* pldespesa);
-
-void inser_despesa(pDespesas lista_De_Despesas);
-
-
-/* Funções sobre alunos */
-
-int inicializa_lista_de_alunos(pAlunos* lista_de_alunos);
-
-int criar_tabela(pAlunos** tabela);
-
-int index_da_tabela(char* string);
-
-int verifica_lista_de_alunoVazia(pAlunos lista_de_aluno);
-
-pAlunos destroi_lista_de_alunos(pAlunos lista);
-
-void destroi_tabela(pAlunos* tabela);
-
-int cria_ficha_para_novo_aluno( pAlunos* novo_aluno);
-//pAlunos* tabela,
-
-void save(pAlunos * plista_de_alunos);
-
-void load(pAlunos * plista_de_alunos);
-
-void print_student(pAlunos * plista_de_alunos);
-
-int delete_student(pAlunos * plista_de_alunos, char* nome);
+typedef struct pNoAluno{
+    pAlunos apontaPara;
+    struct pNoAluno* proximo;
+}pNoAluno;
 
 #endif //PROJETO_STRUCTS_H
