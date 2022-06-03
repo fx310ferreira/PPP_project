@@ -128,6 +128,30 @@ projeto/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/build
 .PHONY : projeto/fast
 
+expenses.obj: expenses.c.obj
+.PHONY : expenses.obj
+
+# target to build an object file
+expenses.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/expenses.c.obj
+.PHONY : expenses.c.obj
+
+expenses.i: expenses.c.i
+.PHONY : expenses.i
+
+# target to preprocess a source file
+expenses.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/expenses.c.i
+.PHONY : expenses.c.i
+
+expenses.s: expenses.c.s
+.PHONY : expenses.s
+
+# target to generate assembly for a file
+expenses.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/expenses.c.s
+.PHONY : expenses.c.s
+
 main.obj: main.c.obj
 .PHONY : main.obj
 
@@ -152,29 +176,77 @@ main.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/main.c.s
 .PHONY : main.c.s
 
-structs.obj: structs.c.obj
-.PHONY : structs.obj
+student_list.obj: student_list.c.obj
+.PHONY : student_list.obj
 
 # target to build an object file
-structs.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/structs.c.obj
-.PHONY : structs.c.obj
+student_list.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/student_list.c.obj
+.PHONY : student_list.c.obj
 
-structs.i: structs.c.i
-.PHONY : structs.i
+student_list.i: student_list.c.i
+.PHONY : student_list.i
 
 # target to preprocess a source file
-structs.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/structs.c.i
-.PHONY : structs.c.i
+student_list.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/student_list.c.i
+.PHONY : student_list.c.i
 
-structs.s: structs.c.s
-.PHONY : structs.s
+student_list.s: student_list.c.s
+.PHONY : student_list.s
 
 # target to generate assembly for a file
-structs.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/structs.c.s
-.PHONY : structs.c.s
+student_list.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/student_list.c.s
+.PHONY : student_list.c.s
+
+student_ops.obj: student_ops.c.obj
+.PHONY : student_ops.obj
+
+# target to build an object file
+student_ops.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/student_ops.c.obj
+.PHONY : student_ops.c.obj
+
+student_ops.i: student_ops.c.i
+.PHONY : student_ops.i
+
+# target to preprocess a source file
+student_ops.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/student_ops.c.i
+.PHONY : student_ops.c.i
+
+student_ops.s: student_ops.c.s
+.PHONY : student_ops.s
+
+# target to generate assembly for a file
+student_ops.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/student_ops.c.s
+.PHONY : student_ops.c.s
+
+validation.obj: validation.c.obj
+.PHONY : validation.obj
+
+# target to build an object file
+validation.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/validation.c.obj
+.PHONY : validation.c.obj
+
+validation.i: validation.c.i
+.PHONY : validation.i
+
+# target to preprocess a source file
+validation.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/validation.c.i
+.PHONY : validation.c.i
+
+validation.s: validation.c.s
+.PHONY : validation.s
+
+# target to generate assembly for a file
+validation.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\projeto.dir\build.make CMakeFiles/projeto.dir/validation.c.s
+.PHONY : validation.c.s
 
 # Help Target
 help:
@@ -185,12 +257,21 @@ help:
 	@echo ... edit_cache
 	@echo ... rebuild_cache
 	@echo ... projeto
+	@echo ... expenses.obj
+	@echo ... expenses.i
+	@echo ... expenses.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s
-	@echo ... structs.obj
-	@echo ... structs.i
-	@echo ... structs.s
+	@echo ... student_list.obj
+	@echo ... student_list.i
+	@echo ... student_list.s
+	@echo ... student_ops.obj
+	@echo ... student_ops.i
+	@echo ... student_ops.s
+	@echo ... validation.obj
+	@echo ... validation.i
+	@echo ... validation.s
 .PHONY : help
 
 

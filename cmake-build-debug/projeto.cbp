@@ -76,13 +76,37 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/expenses.c">
+			<Option target="projeto"/>
+		</Unit>
+		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/expenses.h">
+			<Option target="projeto"/>
+		</Unit>
+		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/imports.h">
+			<Option target="projeto"/>
+		</Unit>
 		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/main.c">
 			<Option target="projeto"/>
 		</Unit>
-		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/structs.c">
+		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/structs.h">
 			<Option target="projeto"/>
 		</Unit>
-		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/structs.h">
+		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/student_list.c">
+			<Option target="projeto"/>
+		</Unit>
+		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/student_list.h">
+			<Option target="projeto"/>
+		</Unit>
+		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/student_ops.c">
+			<Option target="projeto"/>
+		</Unit>
+		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/student_ops.h">
+			<Option target="projeto"/>
+		</Unit>
+		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/validation.c">
+			<Option target="projeto"/>
+		</Unit>
+		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/validation.h">
 			<Option target="projeto"/>
 		</Unit>
 		<Unit filename="C:/Users/tomas/OneDrive/Documentos/GitHub/PPP/CMakeLists.txt">

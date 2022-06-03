@@ -174,8 +174,14 @@ int load(pAlunos** ptabela){
         char* token = strtok(string, ",");
         if(strcmp(token, "S") == 0){ // se for um aluno executa
             pAlunos new = (pAlunos) malloc(sizeof(noAluno));
-            if(new==NULL) return 1;
-            if(inicializa_lista_de_depesas(&new->ficha_aluno.lista_De_Despesas)==-1) return 1;
+            if(new==NULL) {
+                fclose(file);
+                return 1;
+            }
+            if(inicializa_lista_de_depesas(&new->ficha_aluno.lista_De_Despesas)==-1){
+                fclose(file);
+                return 1;
+            }
             helper = new;
             token = strtok(NULL, ",");
             sscanf(token, "%d", &new->ficha_aluno.numero);
@@ -192,7 +198,10 @@ int load(pAlunos** ptabela){
             insere_novoAl_naTabela(tabela, new);
         }else{ // se  for despesa executa
             pDespesas nova_despesa = (pDespesas)malloc(sizeof(noDespesa));
-            if(nova_despesa==NULL) return 1;
+            if(nova_despesa==NULL) {
+                fclose(file);
+                return 1;
+            }
             token = strtok(NULL, ",");
             strcpy(nova_despesa->ficha_despesa.desc, token);
             token = strtok(NULL, ",");

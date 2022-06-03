@@ -1,5 +1,5 @@
 #include "imports.h"
-
+// recebe um ponteiro para uma lista de alunos (ouseja um ponteiro para pAlunos), cria um header e acossia-o a lista ligada
 int inicializa_lista_de_alunos(pAlunos* lista_de_alunos){
     pAlunos temp=(pAlunos) malloc(sizeof(noAluno));
     if(temp==NULL){ return 1; }
@@ -8,6 +8,7 @@ int inicializa_lista_de_alunos(pAlunos* lista_de_alunos){
     return 0;
 }
 
+//aloca memoria para um vetor de dimenção 26 (tamanho do alfabeto), de structs pAlunos que irão conter as listas para cada letra acossiada a um index
 int criar_tabela(pAlunos** tabela){
     *tabela= (pAlunos*) malloc(sizeof(pAlunos)*26);
     if(*tabela==NULL){ return 1; }
@@ -18,12 +19,14 @@ int criar_tabela(pAlunos** tabela){
     return 0;
 }
 
+// verifica se a lista esta vazia
 int verifica_lista_de_alunoVazia(pAlunos lista_de_aluno){
     if(lista_de_aluno->proximo==NULL)
         return 1;
     return 0;
 }
 
+// destroi uma lista de alunos e todas as listas de despesas acossiadas (usando a função "destroi_lista_de_despesas") de forma a preservar memoria que pode assim voltar a ser usada;
 pAlunos destroi_lista_de_alunos(pAlunos lista){
     pAlunos temp;
     while (!verifica_lista_de_alunoVazia(lista)){
@@ -36,6 +39,7 @@ pAlunos destroi_lista_de_alunos(pAlunos lista){
     return NULL;
 }
 
+// usa a função "destroi_lista_de_alunos" para destroi todas as listas acossiadas a tabela e destroi o vetor ou tabela premitindo a reutilização da memoria
 void destroi_tabela(pAlunos* tabela){
     for (int i = 26; i < 0; --i) {
         tabela[i]= destroi_lista_de_alunos(tabela[i]);
@@ -43,11 +47,13 @@ void destroi_tabela(pAlunos* tabela){
     }
 }
 
+// recebe o possivel nome do aluno e retorna com base no primeiro caracter do nome qual a posição da lista em que este podera estar numa tabela "Hash function"
 int index_da_tabela(char* string){
     char t=string[0];
     return t-'A';
 }
 
+//procura se existe um aluno na tabela com um determinado numero que é pasado a função
 pAlunos procura_aluno_na_tabela_peloNumero(int numero, pAlunos* tabela){
     pAlunos temp;
     for (int i = 0; i < 26; ++i) {
@@ -61,6 +67,7 @@ pAlunos procura_aluno_na_tabela_peloNumero(int numero, pAlunos* tabela){
     return NULL;
 }
 
+// recebe um ponteiro para um pAluno, cria um novo aluno com base no input do utilizador e acossia este ao pAluno extrior passado por referencia
 int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
     pAlunos temp = (pAlunos) malloc(sizeof(noAluno));
     if(temp==NULL) return 1;
@@ -114,6 +121,7 @@ int cria_ficha_para_novo_aluno(pAlunos* tabela, pAlunos* novo_aluno){
     return 0;
 }
 
+// procura em uma tabela, tendo como referencia um determinado aluno, a possição antrior a esse aluno e postrior tendo como metodo de comparação precedencia em ordem alfabetica
 void lugar_para_inserirAl(pAlunos* tabela, pAlunos* antrior, pAlunos* atual, pAlunos novo_elemento){
     *antrior=tabela[index_da_tabela(novo_elemento->ficha_aluno.nome)];
     *atual=tabela[index_da_tabela(novo_elemento->ficha_aluno.nome)]->proximo;
@@ -123,6 +131,7 @@ void lugar_para_inserirAl(pAlunos* tabela, pAlunos* antrior, pAlunos* atual, pAl
     }
 }
 
+// insere um novo aluno em uma tabela tendo em cora em que lista é que este deve ficar e a posição dentro dessa lista
 void insere_novoAl_naTabela(pAlunos* tabela, pAlunos novo_aluno){
     pAlunos antrior, atual;
 
@@ -131,6 +140,7 @@ void insere_novoAl_naTabela(pAlunos* tabela, pAlunos novo_aluno){
     antrior->proximo=novo_aluno;
 }
 
+// montra na consola toda a informação sobre um aluno mostrando primeiro a sua ficha de aluno e de seguida a lista de despesas acossiada a este por ordem cronologica
 void mostra_ficha_do_aluno(pAlunos aluno){
     printf("____________________Student Information__________________\n\n", aluno->ficha_aluno.nome, aluno->ficha_aluno.numero);
     printf("Name:%s\n"
@@ -140,7 +150,7 @@ void mostra_ficha_do_aluno(pAlunos aluno){
            "Balance:%.2f\n", aluno->ficha_aluno.nome, aluno->ficha_aluno.numero,aluno->ficha_aluno.ano, aluno->ficha_aluno.turma,aluno->ficha_aluno.data_nascimento.dia, aluno->ficha_aluno.data_nascimento.mes, aluno->ficha_aluno.data_nascimento.ano, aluno->ficha_aluno.saldo);
     if(!verifica_se_a_lista_de_despesas_estaVazia(aluno->ficha_aluno.lista_De_Despesas)){
         pDespesas temp=aluno->ficha_aluno.lista_De_Despesas->proximo;
-        printf("\nStudent expenses from %s:\n\n", aluno->ficha_aluno.nome);
+        printf("\n__Student expenses from %s:___\n\n", aluno->ficha_aluno.nome);
         while(temp!=NULL){
             printf("Date of the expense:%d/%d/%d \n", temp->ficha_despesa.Data.dia, temp->ficha_despesa.Data.mes, temp->ficha_despesa.Data.ano);
             printf("Value:%.2f\n", temp->ficha_despesa.valor);
@@ -151,6 +161,7 @@ void mostra_ficha_do_aluno(pAlunos aluno){
         printf("\nStudent does not have any expenses.\n");
 }
 
+// menu de pesquisa de alunos pelo nome e numero que permite ao utilizador escolher um aluno dentro das possiveis opções se existirem
 int usuario_procura_aluno(pAlunos* tabela, char* msg_a_preguntar_pelo_aluno, char* msg_aluno_nao_encontrado, char* msg_aluno_encontrado, pAlunos* aluno_antes){
     pAlunos aluno;
     int opcao, controlo=0;
@@ -259,6 +270,7 @@ int usuario_procura_aluno(pAlunos* tabela, char* msg_a_preguntar_pelo_aluno, cha
 
 /* Funções sobre pNoAluno */
 
+// recebe um ponteiro para uma lista de pNoAluno* (lista auxiliar com ponteiros para pAlunos permite melhor economia de memoria), cria um header e acossia-o a lista ligada
 int inicializa_lista_pNoal(pNoAluno** pLista){
     pNoAluno* temp= (pNoAluno*) malloc(sizeof(pNoAluno));
     if(temp==NULL){ return 1;}
@@ -267,12 +279,14 @@ int inicializa_lista_pNoal(pNoAluno** pLista){
     return 0;
 }
 
+// verifica se a lista esta vazia
 int verifica_vazia_pNoal(pNoAluno* lista){
     if(lista->proximo==NULL)
         return 1;
     return 0;
 }
 
+// recebe um ponteiro para um pNoAluno* e um ponteiro para o aluno, criado um novo pNoAluno que ira apontar para o aluno e ira ser acossiado ao pNoAluno* passado por referencia
 int cria_pNoal(pNoAluno** pnovo_elemento, pAlunos apontaPara){
     pNoAluno* temp=(pNoAluno*)malloc(sizeof(pNoAluno));
     if(temp==NULL){ return 1;}
@@ -282,6 +296,7 @@ int cria_pNoal(pNoAluno** pnovo_elemento, pAlunos apontaPara){
     return 0;
 }
 
+// procura em uma lista de pNoAluno*, tendo como referencia um pNoAluno*, a possição antrior e postrior a esse elemento, tendo como metodo de comparação precedencia em ordem alfabetica
 void procura_lugar_pNoal_ordemalpha(pNoAluno* lista, pNoAluno** atual, pNoAluno** anterior, pNoAluno* novo_elemento){
     *anterior=lista;
     *atual=lista->proximo;
@@ -291,6 +306,7 @@ void procura_lugar_pNoal_ordemalpha(pNoAluno* lista, pNoAluno** atual, pNoAluno*
     }
 }
 
+// procura em uma lista de pNoAluno*, tendo como referencia um pNoAluno*, a possição antrior e postrior a esse elemento, tendo como metodo de comparação o saldo dos alunos por ordem decrescente
 void procura_lugar_pNoal_ordedecresscente(pNoAluno* lista, pNoAluno** atual, pNoAluno** anterior, pNoAluno* novo_elemento){
     *anterior=lista;
     *atual=lista->proximo;
@@ -300,6 +316,7 @@ void procura_lugar_pNoal_ordedecresscente(pNoAluno* lista, pNoAluno** atual, pNo
     }
 }
 
+// destroi a lista de pNoAluno* de forma a garatir que a memoria usada por esta possa ser reutilizada
 pNoAluno* destroi_lista_pNoal(pNoAluno* lista){
     pNoAluno* temp;
     while (!verifica_vazia_pNoal(lista)){

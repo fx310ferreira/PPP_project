@@ -12,7 +12,7 @@ int main() {
     int clearbuffer;
     do {
 
-        printf("_________________________________________________________\n\n"
+        printf("_________________________________________________________\n\n" // Options menu
                "    1-Crete a new student\n"
                "    2-Delete a student\n"
                "    3-List all students\n"
