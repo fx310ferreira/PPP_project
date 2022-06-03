@@ -1,0 +1,16 @@
+S,12455,Amilcar,12/12/2002,201.00,12,A
+D,Uma tosta mista e uma agua,16/5/2022,12.00
+S,1234,Ana,12/12/2002,12444.00,11,S
+S,55,Bernado Da Silva,12/11/2000,123.00,11,A
+S,124,Elton,13/12/2002,213.00,11,A
+S,4,Frederico,12/12/2002,123.00,12,Z
+S,7025,Jaime Garcia Silva,12/12/2002,-123.00,10,B
+S,12,Joao Tomas,12/12/2002,111.00,12,Z
+D,Ola gelado e cocacola,12/12/2022,12.00
+D,Kit Kat e uma agua mineral,12/12/2022,12.34
+S,1,Telmo Tiago,12/12/2002,123.00,12,Z
+S,3,Teotonio Da Silva,12/12/2002,123.00,12,Z
+S,5,Tina,12/12/2002,124.23,12,Z
+D,Kit Kat e uma agua mineral,12/12/2022,12.34
+S,123,Tomas,12/12/2002,110.80,12,Z
+S,90,Valverde Montenegro,12/12/2002,9987.00,11,A
